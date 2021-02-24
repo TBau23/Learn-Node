@@ -23,17 +23,17 @@ app.set('view engine', 'pug'); // we use the engine pug, mustache or EJS work gr
 // serves up static files from the public folder. Anything in public/ will just be served up as the file it is
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Takes the raw requests and turns them into usable properties on req.body
+// Takes the raw requests and turns them into usable properties on req.body ! Express maintains body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Exposes a bunch of methods for validating data. Used heavily on userController.validateRegister
-app.use(expressValidator());
+app.use(expressValidator()); // app.use is for setting up global middleware, running before we even get to routes
 
 // populates req.cookies with any cookies that came along with the request
 app.use(cookieParser());
 
-// Sessions allow us to store data on visitors from request to request
+// Sessions allow us to store data on visitors from request to request 
 // This keeps users logged in and allows us to send flash messages
 app.use(session({
   secret: process.env.SECRET,
@@ -52,7 +52,7 @@ app.use(flash());
 
 // pass variables to our templates + all requests
 app.use((req, res, next) => {
-  res.locals.h = helpers;
+  res.locals.h = helpers; // this is where the h variable we see in files like the pug layout getting set up
   res.locals.flashes = req.flash();
   res.locals.user = req.user || null;
   res.locals.currentPath = req.path;
